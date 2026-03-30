@@ -18,6 +18,16 @@ public class VenueServiceImpl implements VenueService {
 
     @Override
     public List<Venue> getAllVenues(Integer page, Integer size) {
+        if (page == null || size == null) {
+            throw new IllegalArgumentException(
+                    "page and size cannot be null"
+            );
+        }
+        if (page <= 0 || size <= 0) {
+            throw new IllegalArgumentException(
+                    "page and size must be greater than 0"
+            );
+        }
         Integer offset = (page - 1) * size;
         return venueRepository.getAllVenues(offset, size);
     }
@@ -39,6 +49,8 @@ public class VenueServiceImpl implements VenueService {
 
     @Override
     public Venue updateVenueById(Integer venueId, VenueRequest request) {
+
+
         return venueRepository.updateVenueById(venueId, request);
     }
 }

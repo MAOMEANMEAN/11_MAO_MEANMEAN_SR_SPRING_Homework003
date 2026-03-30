@@ -1,5 +1,6 @@
 package org.example._1_mao_meanmean_sr_spring_homework003.controller;
 
+import org.example._1_mao_meanmean_sr_spring_homework003.exception.NotFoundException;
 import org.example._1_mao_meanmean_sr_spring_homework003.model.entity.Venue;
 import org.example._1_mao_meanmean_sr_spring_homework003.model.request.VenueRequest;
 import org.example._1_mao_meanmean_sr_spring_homework003.model.response.ApiResponseVenue;
@@ -50,8 +51,13 @@ public class VenueController {
 
     @PutMapping("/{venue-id}")
     public ResponseEntity<ApiResponseVenue<Venue>> updateVenueById(@PathVariable("venue-id") Integer venueId, @RequestBody VenueRequest request) {
-        Venue venue = venueService.updateVenueById(venueId ,request);
-        ApiResponseVenue<Venue> response = ApiResponseVenue.<Venue>builder().timestamp(Instant.now()).message("Updated venue with id " + venueId + " successfully").status(HttpStatus.OK).payload(venue).build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        try {
+            Venue venue = venueService.updateVenueById(venueId ,request);
+            ApiResponseVenue<Venue> response = ApiResponseVenue.<Venue>builder().timestamp(Instant.now()).message("Updated venue with id " + venueId + " successfully").status(HttpStatus.OK).payload(venue).build();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NotFoundException e){
+            ApiResponseVenue<Venue> response = ApiResponseVenue.<Venue>builder().timestamp(Instant.now()).message("Updated venue with id " + venueId + " not found").status(HttpStatus.OK).payload(null).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 }
